@@ -12,14 +12,13 @@ app.use(express.json());
 app.use(cors());
 
 
-const port = 5000;
+const port = process.env.port || 5000;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 client.connect((err) => {
-  console.log(err)
   const productsCollection = client.db("emaJohnStore").collection("products");
   const ordersCollection = client.db("emaJohnStore").collection("orders");
 
@@ -35,7 +34,6 @@ client.connect((err) => {
 
   app.get('/products', (req, res) => {
     const search = req.query.search;
-    console.log(search)
     productsCollection.find({name: {$regex: search}})
     .toArray((err, documents) => {
       res.send(documents);
